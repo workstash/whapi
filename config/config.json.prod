@@ -1,0 +1,13 @@
+{
+  "LoggerFile": "",
+  "API":{
+    "Port": "8080",
+    "CorsOrigin": "*",
+    "SessionPath": ""
+  },
+  "Client":{
+    "LongName": "Gestor Lite",
+    "ShortName": "Gestor Lite",
+    "Version": "1.0"
+  }
+}

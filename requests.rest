@@ -1,0 +1,9 @@
+GET http://localhost:8080/send?device=myDevice&num=123456&msg=testing HTTP/1.1
+
+###
+
+GET http://localhost:8080/qrcode?device=myDevice HTTP/1.1
+
+###
+
+GET http://localhost:8080/close?device=myDevice HTTP/1.1

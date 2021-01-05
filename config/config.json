@@ -1,0 +1,13 @@
+{
+  "LoggerFile": "C:/Users/caio_/go/src/github.com/workstash/whapi/logs",
+  "API":{
+    "Port": "8080",
+    "CorsOrigin": "*",
+    "SessionPath": "C:/Users/caio_/go/src/github.com/workstash/whapi/sessions"
+  },
+  "Client":{
+    "LongName": "Gestor Lite",
+    "ShortName": "Gestor Lite",
+    "Version": "1.0"
+  }
+}
