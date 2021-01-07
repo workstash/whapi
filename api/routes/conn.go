@@ -8,15 +8,16 @@ import (
 	"os"
 
 	"github.com/workstash/whapi/config"
+	"github.com/workstash/whapi/infrastructure/qrcode"
 	"github.com/workstash/whapi/infrastructure/whats"
 
-	qrcodeTerminal "github.com/Baozisoftware/qrcode-terminal-go"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )
 
 func qrCode() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		config := config.Main.API
 		// validate data
 		device, ok := r.URL.Query()["device"]
 		if !ok {
@@ -44,11 +45,16 @@ func qrCode() http.Handler {
 			return
 		}
 		if qrCode != "" {
-			if config.Main.API.GenerateQrCode {
-				qr := qrcodeTerminal.New()
-				qrCode = fmt.Sprint(*qr.Get(qrCode))
+			if config.GenerateQrCode {
+				qrCodeBytes, err := qrcode.GenerateQrCode(qrCode, config.QrCodeQuality, config.QrCodeSize)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					w.Write(internalServerErr)
+					return
+				}
+				qrCode = string(qrCodeBytes)
 			}
-			if config.Main.API.EncodeBase64 {
+			if config.EncodeBase64 {
 				qrCode = base64.StdEncoding.EncodeToString([]byte(qrCode))
 			}
 

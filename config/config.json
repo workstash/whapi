@@ -5,6 +5,8 @@
     "CorsOrigin": "*",
     "SessionPath": "C:/Users/caio_/go/src/github.com/workstash/whapi/sessions",
     "GenerateQrCode": true,
+    "QrCodeQuality": "medium",
+    "QrCodeSize": 256,
     "EncodeBase64": true
   },
   "Client":{

@@ -5,6 +5,8 @@
     "CorsOrigin": "*",
     "SessionPath": "",
     "GenerateQrCode": true,
+    "QrCodeQuality": "medium",
+    "QrCodeSize": 256,
     "EncodeBase64": true
   },
   "Client":{
