@@ -9,9 +9,11 @@ var LoggerFile string
 
 // API stores api configuration
 type API struct {
-	Port        string `default:"8080"`
-	CorsOrigin  string `default:"*"`
-	SessionPath string `required:"true"`
+	Port           string `default:"8080"`
+	CorsOrigin     string `default:"*"`
+	SessionPath    string `required:"true"`
+	GenerateQrCode bool   `default:"false"`
+	EncodeBase64   bool   `default:"false"`
 }
 
 // Client stores client configuration

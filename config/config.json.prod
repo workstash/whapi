@@ -1,13 +1,15 @@
 {
   "LoggerFile": "",
   "API":{
-    "Port": "8080",
+    "Port": "",
     "CorsOrigin": "*",
-    "SessionPath": ""
+    "SessionPath": "",
+    "GenerateQrCode": true,
+    "EncodeBase64": true
   },
   "Client":{
-    "LongName": "Gestor Lite",
-    "ShortName": "Gestor Lite",
+    "LongName": "",
+    "ShortName": "",
     "Version": "1.0"
   }
 }

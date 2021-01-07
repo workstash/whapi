@@ -3,7 +3,9 @@
   "API":{
     "Port": "8080",
     "CorsOrigin": "*",
-    "SessionPath": "C:/Users/caio_/go/src/github.com/workstash/whapi/sessions"
+    "SessionPath": "C:/Users/caio_/go/src/github.com/workstash/whapi/sessions",
+    "GenerateQrCode": true,
+    "EncodeBase64": true
   },
   "Client":{
     "LongName": "Gestor Lite",

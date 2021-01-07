@@ -1,13 +1,16 @@
 package routes
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+
 	"github.com/workstash/whapi/config"
 	"github.com/workstash/whapi/infrastructure/whats"
 
+	qrcodeTerminal "github.com/Baozisoftware/qrcode-terminal-go"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )
@@ -41,6 +44,14 @@ func qrCode() http.Handler {
 			return
 		}
 		if qrCode != "" {
+			if config.Main.API.GenerateQrCode {
+				qr := qrcodeTerminal.New()
+				qrCode = fmt.Sprint(*qr.Get(qrCode))
+			}
+			if config.Main.API.EncodeBase64 {
+				qrCode = base64.StdEncoding.EncodeToString([]byte(qrCode))
+			}
+
 			res.QrCode = qrCode
 			w.WriteHeader(http.StatusCreated)
 			if err := json.NewEncoder(w).Encode(res); err != nil {
