@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+
 	"github.com/workstash/whapi/infrastructure/whats"
 
 	"github.com/gorilla/mux"
@@ -37,6 +38,14 @@ func sendMessage() http.Handler {
 			return
 		}
 		// send message
+
+		num[0], err = whats.ValidateNum(num[0], wac)
+		if err != nil {
+			w.WriteHeader(http.StatusForbidden)
+			w.Write(invalidNumber)
+			return
+		}
+
 		err = whats.SendMessageA(wac, device[0], num[0], msg[0])
 		if err == whats.ErrConnecting {
 			w.WriteHeader(http.StatusForbidden)
