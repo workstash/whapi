@@ -39,7 +39,7 @@ func sendMessage() http.Handler {
 		}
 		// send message
 
-		num[0], err = whats.ValidateNum(num[0], wac)
+		num[0], err = whats.ValidateNum(num[0], wac, device[0])
 		if err != nil {
 			w.WriteHeader(http.StatusForbidden)
 			w.Write(invalidNumber)
