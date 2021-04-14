@@ -36,18 +36,20 @@ func ValidateNum(number string, wac *whatsapp.Conn, device string) (string, erro
 
 		fmt.Printf("Payload from ValidateNum: [%+v]", payload)
 
+		ret := fmt.Sprintf("%s%s", strings.TrimSuffix(payload.JID, retsuffix), suffix)
+
 		if payload.Status != 200 {
 			fmt.Println("Payload not 200: ")
 			fmt.Println("---------------------------------------------------------------------------")
 			fmt.Println("ValidateNum")
 			fmt.Println("Full Number:", fullnumber)
 			fmt.Printf("Payload: [%+v]\n", payload)
-			fmt.Println("retorno:", fmt.Sprintf("%s%s", strings.TrimSuffix(payload.JID, retsuffix), suffix))
+			fmt.Println("retorno:", ret)
 			fmt.Println("---------------------------------------------------------------------------")
 			return "", fmt.Errorf("status: %d", payload.Status)
 		}
 
-		return fmt.Sprintf("%s%s", strings.TrimSuffix(payload.JID, retsuffix), suffix), nil
+		return ret, nil
 	} else {
 		fmt.Println("Fail trying to authenticate the device", device)
 		return "Fail trying to authenticate the device", err

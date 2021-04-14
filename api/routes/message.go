@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/workstash/whapi/infrastructure/whats"
@@ -45,6 +46,8 @@ func sendMessage() http.Handler {
 			w.Write(invalidNumber)
 			return
 		}
+
+		fmt.Println("Enviando mensagem para o número ", num[0])
 
 		err = whats.SendMessageA(wac, device[0], num[0], msg[0])
 		if err == whats.ErrConnecting {
