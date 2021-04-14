@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+
 	"github.com/workstash/whapi/config"
 	"github.com/workstash/whapi/helper/logger"
 
@@ -26,6 +27,20 @@ func NewConn() (*whatsapp.Conn, error) {
 
 //Auth try to connect to existing session
 func auth(wac *whatsapp.Conn, sessionPath string) error {
+	//load saved session
+	session, err := readSession(sessionPath)
+	if err != nil {
+		return err
+	}
+	//restore session
+	session, err = wac.RestoreWithSession(session)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func Auth(wac *whatsapp.Conn, sessionPath string) error {
 	//load saved session
 	session, err := readSession(sessionPath)
 	if err != nil {
