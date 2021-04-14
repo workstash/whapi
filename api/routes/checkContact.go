@@ -51,8 +51,8 @@ func checkContact() http.Handler {
 			return
 		}
 		// check contact
-		//wphone := fmt.Sprintf("%v@s.whatsapp.net", num)
-		wphone := fmt.Sprintf("%v@c.us", num)
+		wphone := fmt.Sprintf("%v@s.whatsapp.net", num)
+		//wphone := fmt.Sprintf("%v@c.us", num)
 
 		fmt.Println("num:", num)
 		fmt.Println("wphone:", wphone)

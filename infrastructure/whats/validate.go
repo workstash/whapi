@@ -10,7 +10,8 @@ import (
 
 // ValidateNum verify if number is valid
 func ValidateNum(number string, wac *whatsapp.Conn) (string, error) {
-	suffix := "@c.us"
+	//suffix := "@c.us"
+	suffix := "s.whatsapp.net"
 	payload := struct {
 		Status int
 		JID    string
