@@ -50,6 +50,8 @@ func ValidateNum(number string, wac *whatsapp.Conn, device string) (string, erro
 		return fmt.Sprintf("%s%s", strings.TrimSuffix(payload.JID, retsuffix), suffix), nil
 	} else {
 		fmt.Println("Fail trying to authenticate the device", device)
+		return "Fail trying to authenticate the device", err
+
 	}
 	/*
 		if len(num) > 0 {
