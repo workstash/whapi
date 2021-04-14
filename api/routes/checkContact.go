@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/workstash/whapi/infrastructure/whats"
@@ -22,20 +23,25 @@ type ContactInfo struct {
 func checkContact() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// validate data
+		/*
+			device, ok := r.URL.Query()["device"]
+			if !ok {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write(badRequest)
+				return
+			}
+		*/
 
-		device, ok := r.URL.Query()["device"]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(badRequest)
-			return
-		}
+		/*
+			num, ok := r.URL.Query()["num"]
 
-		num, ok := r.URL.Query()["num"]
-		if !ok {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(badRequest)
-			return
-		}
+			if !ok {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write(badRequest)
+				return
+			}
+		*/
+		num := r.FormValue("num")
 
 		// create connection
 		wac, err := whats.NewConn()
@@ -45,10 +51,14 @@ func checkContact() http.Handler {
 			return
 		}
 		// check contact
-		wphone := num
+		wphone := fmt.Sprintf("%v@s.whatsapp.net", num)
+
+		fmt.Println("num:", num)
+		fmt.Println("wphone:", wphone)
+
 		var ci ContactInfo
 
-		dd, er := wac.Exist(wphone + "@s.whatsapp.net")
+		dd, er := wac.Exist(wphone)
 		if er != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write(badRequest)
@@ -56,7 +66,7 @@ func checkContact() http.Handler {
 		}
 		ci.Exists = <-dd
 
-		sd, fg := wac.GetStatus(wphone + "@s.whatsapp.net")
+		sd, fg := wac.GetStatus(wphone)
 		if fg != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write(badRequest)
@@ -64,7 +74,7 @@ func checkContact() http.Handler {
 		}
 		ci.Status = <-sd
 
-		a, b := wac.SubscribePresence(wphone + "@s.whatsapp.net")
+		a, b := wac.SubscribePresence(wphone)
 		if b != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write(badRequest)
@@ -72,24 +82,13 @@ func checkContact() http.Handler {
 		}
 		ci.Online = <-a
 
-		t, f := wac.GetProfilePicThumb(wphone + "@s.whatsapp.net")
+		t, f := wac.GetProfilePicThumb(wphone)
 		if f != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write(badRequest)
 			return
 		}
 		ci.Thumb = <-t
-
-		err = whats.SendMessageA(wac, device[0], num[0], msg[0])
-		if err == whats.ErrConnecting {
-			w.WriteHeader(http.StatusForbidden)
-			w.Write(connFailed)
-			return
-		} else if err != nil {
-			w.WriteHeader(http.StatusRequestTimeout)
-			w.Write(reqTimeout)
-			return
-		}
 
 		w.WriteHeader(http.StatusOK)
 
