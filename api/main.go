@@ -36,6 +36,7 @@ func main() {
 	//message
 	routes.MakeConnectionHandlers(r, *n)
 	routes.MakeMessageHandlers(r, *n)
+	routes.MakeContactHandler(r, *n)
 
 	http.Handle("/", r)
 	http.Handle("/metrics", promhttp.Handler())
