@@ -19,16 +19,25 @@ func ValidateNum(number string, wac *whatsapp.Conn) (string, error) {
 
 	resp, err := wac.Exist(fmt.Sprintf("%s%s", number, suffix))
 	if err != nil {
+		fmt.Println("Error calling wac.Exist(line 20): ", err.Error())
 		return "", err
 	}
 
 	if err := json.Unmarshal([]byte(<-resp), &payload); err != nil {
+		fmt.Println("Error unmarshalling Exist (line 26): ", err.Error())
 		return "", err
 	}
 
 	fmt.Printf("Payload from ValidateNum: [%+v]", payload)
 
 	if payload.Status != 200 {
+		fmt.Println("Payload not 200: ")
+		fmt.Println("---------------------------------------------------------------------------")
+		fmt.Println("ValidateNum")
+		fmt.Println("Number:", number)
+		fmt.Printf("Payload: [%+v]\n", payload)
+		fmt.Println("retorno:", fmt.Sprintf("%s%s", strings.TrimSuffix(payload.JID, retsuffix), suffix))
+		fmt.Println("---------------------------------------------------------------------------")
 		return "", fmt.Errorf("status: %d", payload.Status)
 	}
 
