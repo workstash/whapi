@@ -10,7 +10,7 @@ import (
 
 // ValidateNum verify if number is valid
 func ValidateNum(number string, wac *whatsapp.Conn) (string, error) {
-	//suffix := "@c.us"
+	retsuffix := "@c.us"
 	suffix := "@s.whatsapp.net"
 	payload := struct {
 		Status int
@@ -26,9 +26,20 @@ func ValidateNum(number string, wac *whatsapp.Conn) (string, error) {
 		return "", err
 	}
 
+	fmt.Printf("Payload from ValidateNum: [%+v]", payload)
+
 	if payload.Status != 200 {
 		return "", fmt.Errorf("status: %d", payload.Status)
 	}
 
-	return strings.TrimSuffix(payload.JID, suffix), nil
+	return fmt.Sprintf("%s%s", strings.TrimSuffix(payload.JID, retsuffix), suffix), nil
+	/*
+		if len(num) > 0 {
+			num2 := strings.Split(num, "@")
+			destino2 = fmt.Sprintf("%s%s", num2[0], "@s.whatsapp.net")
+		}
+
+
+		return strings.TrimSuffix(payload.JID, suffix), nil
+	*/
 }
