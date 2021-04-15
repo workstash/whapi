@@ -58,7 +58,7 @@ func sendMessage() http.Handler {
 
 			text := whatsapp.TextMessage{
 				Info: whatsapp.MessageInfo{
-					RemoteJid: num[0] + "@s.whatsapp.net",
+					RemoteJid: num[0] //+ "@s.whatsapp.net",
 				},
 				Text: msg[0],
 			}
