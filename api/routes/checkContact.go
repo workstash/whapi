@@ -15,7 +15,7 @@ import (
 // Structure to return JSON with Contacts Info
 
 type payload struct {
-	Status string `json:"status"`
+	Status int    `json:"status"`
 	JID    string `json:"jid"`
 }
 
@@ -63,7 +63,7 @@ func checkContact() http.Handler {
 			//fmt.Println("wphone:", wphone)
 
 			var ci ContactInfo
-			var pdd, psd, pa, pt *payload
+			var pdd *payload //, psd, pa, pt *payload
 
 			//------------- Exist ---------------
 			dd, er := wac.Exist(wphone)
@@ -78,51 +78,51 @@ func checkContact() http.Handler {
 				return
 			}
 			ci.Exists = pdd
+			/*
+				//------------- GetStatus ---------------
+				sd, fg := wac.GetStatus(wphone)
+				if fg != nil {
+					fmt.Println("Failed GetStatus: ", fg.Error())
+					w.WriteHeader(http.StatusBadRequest)
+					w.Write(badRequest)
+					return
+				}
+				if err := json.Unmarshal([]byte(<-sd), &psd); err != nil {
+					fmt.Println("Error unmarshalling GetStatus: ", err.Error())
+					return
+				}
+				ci.Status = psd
 
-			//------------- GetStatus ---------------
-			sd, fg := wac.GetStatus(wphone)
-			if fg != nil {
-				fmt.Println("Failed GetStatus: ", fg.Error())
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write(badRequest)
-				return
-			}
-			if err := json.Unmarshal([]byte(<-sd), &psd); err != nil {
-				fmt.Println("Error unmarshalling GetStatus: ", err.Error())
-				return
-			}
-			ci.Status = psd
+				//------------- SubscribePresence ---------------
+				a, b := wac.SubscribePresence(wphone)
+				if b != nil {
+					fmt.Println("Failed SubscribePresence: ", b.Error())
+					w.WriteHeader(http.StatusBadRequest)
+					w.Write(badRequest)
+					return
+				}
+				if err := json.Unmarshal([]byte(<-a), &pa); err != nil {
+					fmt.Println("Error unmarshalling SubscribePresence: ", err.Error())
+					return
+				}
 
-			//------------- SubscribePresence ---------------
-			a, b := wac.SubscribePresence(wphone)
-			if b != nil {
-				fmt.Println("Failed SubscribePresence: ", b.Error())
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write(badRequest)
-				return
-			}
-			if err := json.Unmarshal([]byte(<-a), &pa); err != nil {
-				fmt.Println("Error unmarshalling SubscribePresence: ", err.Error())
-				return
-			}
+				ci.Online = pa
 
-			ci.Online = pa
+				//------------- GetProfilePicThumb ---------------
+				t, f := wac.GetProfilePicThumb(wphone)
+				if f != nil {
+					fmt.Println("Failed GetProfilePicThumb: ", f.Error())
+					w.WriteHeader(http.StatusBadRequest)
+					w.Write(badRequest)
+					return
+				}
+				if err := json.Unmarshal([]byte(<-t), &pt); err != nil {
+					fmt.Println("Error unmarshalling GetProfilePicThumb: ", err.Error())
+					return
+				}
 
-			//------------- GetProfilePicThumb ---------------
-			t, f := wac.GetProfilePicThumb(wphone)
-			if f != nil {
-				fmt.Println("Failed GetProfilePicThumb: ", f.Error())
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write(badRequest)
-				return
-			}
-			if err := json.Unmarshal([]byte(<-t), &pt); err != nil {
-				fmt.Println("Error unmarshalling GetProfilePicThumb: ", err.Error())
-				return
-			}
-
-			ci.Thumb = pt
-
+				ci.Thumb = pt
+			*/
 			js, err := json.Marshal(ci)
 			if err != nil {
 				fmt.Println("Error marshalling Contact Info: ", err.Error())
