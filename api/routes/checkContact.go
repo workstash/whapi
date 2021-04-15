@@ -22,7 +22,7 @@ type ContactInfo struct {
 }
 
 type payload struct {
-	Status int    `json:"status"`
+	Status string `json:"status"`
 	JID    string `json:"jid"`
 }
 
