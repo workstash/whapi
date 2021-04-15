@@ -14,16 +14,16 @@ import (
 
 // Structure to return JSON with Contacts Info
 
-type ContactInfo struct {
-	Exists payload `json:"exists"`
-	Status payload `json:"status"`
-	Online payload `json:"online"`
-	Thumb  payload `json:"thumb"`
-}
-
 type payload struct {
 	Status string `json:"status"`
 	JID    string `json:"jid"`
+}
+
+type ContactInfo struct {
+	Exists *payload `json:"exists"`
+	Status *payload `json:"status"`
+	Online *payload `json:"online"`
+	Thumb  *payload `json:"thumb"`
 }
 
 func checkContact() http.Handler {
@@ -63,11 +63,12 @@ func checkContact() http.Handler {
 			//fmt.Println("wphone:", wphone)
 
 			var ci ContactInfo
-			var pdd, psd, pa, pt payload
+			var pdd, psd, pa, pt *payload
 
 			//------------- Exist ---------------
 			dd, er := wac.Exist(wphone)
 			if er != nil {
+				fmt.Println("Failed Exist: ", er.Error())
 				w.WriteHeader(http.StatusBadRequest)
 				w.Write(badRequest)
 				return
@@ -81,6 +82,7 @@ func checkContact() http.Handler {
 			//------------- GetStatus ---------------
 			sd, fg := wac.GetStatus(wphone)
 			if fg != nil {
+				fmt.Println("Failed GetStatus: ", fg.Error())
 				w.WriteHeader(http.StatusBadRequest)
 				w.Write(badRequest)
 				return
@@ -94,6 +96,7 @@ func checkContact() http.Handler {
 			//------------- SubscribePresence ---------------
 			a, b := wac.SubscribePresence(wphone)
 			if b != nil {
+				fmt.Println("Failed SubscribePresence: ", b.Error())
 				w.WriteHeader(http.StatusBadRequest)
 				w.Write(badRequest)
 				return
@@ -108,6 +111,7 @@ func checkContact() http.Handler {
 			//------------- GetProfilePicThumb ---------------
 			t, f := wac.GetProfilePicThumb(wphone)
 			if f != nil {
+				fmt.Println("Failed GetProfilePicThumb: ", f.Error())
 				w.WriteHeader(http.StatusBadRequest)
 				w.Write(badRequest)
 				return
@@ -119,15 +123,14 @@ func checkContact() http.Handler {
 
 			ci.Thumb = pt
 
-			w.WriteHeader(http.StatusOK)
-
 			js, err := json.Marshal(ci)
 			if err != nil {
+				fmt.Println("Error marshalling Contact Info: ", err.Error())
 				w.WriteHeader(http.StatusBadRequest)
 				w.Write(badRequest)
 				return
 			}
-
+			w.WriteHeader(http.StatusOK)
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(js)
 		} else {
