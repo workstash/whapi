@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/workstash/whapi/config"
 	"github.com/workstash/whapi/infrastructure/whats"
 
 	"github.com/gorilla/mux"
@@ -23,25 +24,21 @@ type ContactInfo struct {
 func checkContact() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// validate data
-		/*
-			device, ok := r.URL.Query()["device"]
-			if !ok {
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write(badRequest)
-				return
-			}
-		*/
 
-		/*
-			num, ok := r.URL.Query()["num"]
+		device, ok := r.URL.Query()["device"]
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write(badRequest)
+			return
+		}
 
-			if !ok {
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write(badRequest)
-				return
-			}
-		*/
-		num := r.FormValue("num")
+		num, ok := r.URL.Query()["num"]
+
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write(badRequest)
+			return
+		}
 
 		// create connection
 		wac, err := whats.NewConn()
@@ -50,58 +47,66 @@ func checkContact() http.Handler {
 			w.Write(badRequest)
 			return
 		}
-		// check contact
-		wphone := fmt.Sprintf("%v@s.whatsapp.net", num)
-		//wphone := fmt.Sprintf("%v@c.us", num)
 
-		fmt.Println("num:", num)
-		fmt.Println("wphone:", wphone)
+		sessionPath := fmt.Sprintf("%s/%s.gob", config.Main.API.SessionPath, device[0])
+		if err := whats.Auth(wac, sessionPath); err == nil {
 
-		var ci ContactInfo
+			// check contact
+			wphone := fmt.Sprintf("%v@s.whatsapp.net", num[0])
 
-		dd, er := wac.Exist(wphone)
-		if er != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(badRequest)
+			//fmt.Println("num:", num)
+			//fmt.Println("wphone:", wphone)
+
+			var ci ContactInfo
+
+			dd, er := wac.Exist(wphone)
+			if er != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write(badRequest)
+				return
+			}
+			ci.Exists = <-dd
+
+			sd, fg := wac.GetStatus(wphone)
+			if fg != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write(badRequest)
+				return
+			}
+			ci.Status = <-sd
+
+			a, b := wac.SubscribePresence(wphone)
+			if b != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write(badRequest)
+				return
+			}
+			ci.Online = <-a
+
+			t, f := wac.GetProfilePicThumb(wphone)
+			if f != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write(badRequest)
+				return
+			}
+			ci.Thumb = <-t
+
+			w.WriteHeader(http.StatusOK)
+
+			js, err := json.Marshal(ci)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write(badRequest)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(js)
+		} else {
+			w.WriteHeader(http.StatusRequestTimeout)
+			w.Write(reqTimeout)
 			return
 		}
-		ci.Exists = <-dd
-
-		sd, fg := wac.GetStatus(wphone)
-		if fg != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(badRequest)
-			return
-		}
-		ci.Status = <-sd
-
-		a, b := wac.SubscribePresence(wphone)
-		if b != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(badRequest)
-			return
-		}
-		ci.Online = <-a
-
-		t, f := wac.GetProfilePicThumb(wphone)
-		if f != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(badRequest)
-			return
-		}
-		ci.Thumb = <-t
-
-		w.WriteHeader(http.StatusOK)
-
-		js, err := json.Marshal(ci)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write(badRequest)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(js)
 	})
 }
 
