@@ -42,7 +42,7 @@ func sendMessage() http.Handler {
 		}
 		// send message
 
-		sessionPath := fmt.Sprintf("%s/%s.gob", config.Main.API.SessionPath, device)
+		sessionPath := fmt.Sprintf("%s/%s.gob", config.Main.API.SessionPath, device[0])
 		if err := whats.Auth(wac, sessionPath); err == nil {
 
 			num[0], err = whats.ValidateNum(num[0], wac)
@@ -80,6 +80,10 @@ func sendMessage() http.Handler {
 			*/
 
 			w.WriteHeader(http.StatusOK)
+		} else {
+			w.WriteHeader(http.StatusRequestTimeout)
+			w.Write(reqTimeout)
+			return
 		}
 	})
 }
