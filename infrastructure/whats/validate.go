@@ -33,7 +33,7 @@ func ValidateNum(number string, wac *whatsapp.Conn) (string, error) {
 		return "", err
 	}
 
-	fmt.Printf("Payload from ValidateNum: [%+v]", payload)
+	fmt.Printf("Payload from ValidateNum: [%+v]\n", payload)
 
 	ret := fmt.Sprintf("%s%s", strings.TrimSuffix(payload.JID, retsuffix), suffix)
 
