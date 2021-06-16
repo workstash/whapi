@@ -24,7 +24,7 @@ type API struct {
 type Client struct {
 	LongName  string `default:"Whapi"`
 	ShortName string `default:"Whapi"`
-	Version   string `default:"1.0"`
+	Version   string `default:"2.2121.6"`
 }
 
 // Configuration implements all configurations

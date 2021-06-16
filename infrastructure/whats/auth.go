@@ -20,7 +20,7 @@ func NewConn() (*whatsapp.Conn, error) {
 	}
 	client := config.Main.Client
 	wac.SetClientName(client.LongName, client.ShortName, client.Version)
-	wac.SetClientVersion(2, 2021, 4)
+	wac.SetClientVersion(2, 2021, 6)
 
 	return wac, nil
 }
