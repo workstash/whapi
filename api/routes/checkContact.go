@@ -53,6 +53,8 @@ func checkContact() http.Handler {
 			return
 		}
 
+		wac.SetClientVersion(2, 2121, 6)
+
 		sessionPath := fmt.Sprintf("%s/%s.gob", config.Main.API.SessionPath, device[0])
 		if err := whats.Auth(wac, sessionPath); err == nil {
 
