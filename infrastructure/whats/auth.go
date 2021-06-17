@@ -57,6 +57,7 @@ func Auth(wac *whatsapp.Conn, sessionPath string) error {
 //Login login to whats app account
 func Login(wac *whatsapp.Conn, device string) (string, error) {
 	//no saved session -> regular login
+	wac.SetClientVersion(2, 2121, 6)
 	sessionPath := fmt.Sprintf("%s/%s.gob", config.Main.API.SessionPath, device)
 	qrCode := make(chan string, 10)
 	if err := auth(wac, sessionPath); err != nil {
