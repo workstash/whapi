@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/urfave/negroni"
 )
@@ -25,6 +27,28 @@ func main() {
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
+
+	var createDB bool
+
+	file, err := os.Open("log.db") // Create SQLite file
+	if err != nil {
+		file, err := os.Create("log.db") // Create SQLite file
+		createDB = true
+		if err != nil {
+			log.Println(err.Error())
+		}
+		file.Close()
+	}
+	file.Close()
+
+	db, _ := sql.Open("sqlite3", "./log.db") // Open the created SQLite File
+	routes.DB = db
+	defer db.Close() // Defer Closing the database
+
+	if createDB {
+		routes.CreateTable(db)
+	}
+
 	r := mux.NewRouter()
 	n := negroni.New(
 		negroni.HandlerFunc(middleware.Cors),

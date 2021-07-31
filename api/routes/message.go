@@ -66,6 +66,9 @@ func sendMessage() http.Handler {
 			}
 
 			_, err = wac.Send(text)
+
+			InsertLog(device[0], num[0], err.Error())
+
 			if err != nil && err.Error() != "sending message timed out" {
 				return
 			}
