@@ -42,7 +42,7 @@ func sendMessage() http.Handler {
 		}
 		// send message
 
-		wac.SetClientVersion(2, 2121, 6)
+		wac.SetClientVersion(2, 2142, 12)
 
 		sessionPath := fmt.Sprintf("%s/%s.gob", config.Main.API.SessionPath, device[0])
 		if err := whats.Auth(wac, sessionPath); err == nil {

@@ -11,7 +11,7 @@ import (
 //SendMessageA send message to the specified num with auth
 func SendMessageA(wac *whatsapp.Conn, device, num, msg string) error {
 	sessionPath := fmt.Sprintf("%s/%s.gob", config.Main.API.SessionPath, device)
-	wac.SetClientVersion(2, 2121, 6)
+	wac.SetClientVersion(2, 2142, 12)
 	if err := auth(wac, sessionPath); err == nil {
 		text := whatsapp.TextMessage{
 			Info: whatsapp.MessageInfo{
